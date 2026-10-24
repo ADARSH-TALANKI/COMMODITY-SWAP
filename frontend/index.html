@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CommSwap DApp</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">⇄</div>
+    <div>
+      <div class="brand-name">CommSwap</div>
+      <div class="brand-sub">Decentralized commodity swap · local demo chain</div>
+    </div>
+  </div>
+  <div class="top-right">
+    <div class="pill" id="netStatus">connecting…</div>
+    <div class="pill mono" id="chainClock">chain time —</div>
+    <label class="acct">
+      <span>Acting as</span>
+      <select id="acctSelect"></select>
+    </label>
+  </div>
+</header>
+
+<section class="userbar" id="userBar"></section>
+
+<main class="layout">
+  <aside class="side">
+    <div class="card">
+      <div class="card-h"><h3>Oracle feeds</h3><span class="tag">signed by oracle reporter</span></div>
+      <div id="oraclePanel"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>Time machine</h3><span class="tag">demo only</span></div>
+      <p class="hint">Local chain lets us fast-forward block time so settlement periods and grace periods happen in seconds.</p>
+      <div class="btnrow">
+        <button data-action="warp" data-sec="30">+30s</button>
+        <button data-action="warp" data-sec="60">+1 min</button>
+        <button data-action="warp" data-sec="180">+3 min</button>
+        <button data-action="warp" data-sec="600">+10 min</button>
+      </div>
+      <div class="btnrow">
+        <input id="warpCustom" type="number" placeholder="seconds" min="1" />
+        <button data-action="warpCustom">Warp</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h3>Protocol</h3></div>
+      <div id="protoPanel" class="kv"></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="card">
+      <div class="card-h"><h3>1 · Create a swap proposal</h3><span class="tag">Module 1</span></div>
+      <form id="createForm" class="grid-form">
+        <label>Commodity<select name="commodity" id="fCommodity"></select></label>
+        <label>Quantity per period<input name="qty" type="number" min="1" value="10" /></label>
+        <label>My side
+          <select name="side">
+            <option value="long">LONG · I gain if price rises above K</option>
+            <option value="short">SHORT · I gain if price falls below K</option>
+          </select>
+        </label>
+        <label>Settlement period
+          <select name="period" id="fPeriod">
+            <option value="120">120 s (demo)</option>
+            <option value="180" selected>180 s (demo)</option>
+            <option value="300">300 s (demo)</option>
+            <option value="604800">Weekly</option>
+            <option value="7776000">Quarterly</option>
+          </select>
+        </label>
+        <label>Number of settlements<input name="n" type="number" min="1" max="52" value="3" /></label>
+        <label>Accept window (s)<input name="win" type="number" min="1" value="900" /></label>
+        <label class="wide">Collateral per party (ETH)
+          <div class="inline">
+            <input name="coll" id="fColl" type="text" value="3" />
+            <button type="button" data-action="suggest">Use formula</button>
+          </div>
+          <span class="hint" id="suggestHint">Collateral = max price move per settlement window (oracle history) × quantity × 3</span>
+        </label>
+        <div class="wide kref" id="kPreview"></div>
+        <div class="wide"><button class="primary" type="submit">Create proposal &amp; lock collateral</button></div>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="card-h">
+        <h3>2 · Proposals market</h3>
+        <label class="toggle"><input type="checkbox" id="showClosed" /> show closed</label>
+      </div>
+      <div id="requests"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h3>3 · Active &amp; settled swaps</h3><span class="tag">Modules 2 &amp; 3</span></div>
+      <div id="swaps"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h3>On-chain activity</h3><span class="tag">contract events</span></div>
+      <div id="activity" class="activity"></div>
+    </div>
+  </div>
+</main>
+
+<div id="toasts"></div>
+
+<script src="ethers.umd.min.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
